@@ -152,10 +152,12 @@ export default function HomePage() {
               <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 rounded-xl shadow-xl p-6 text-white">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h2 className="text-2xl font-bold mb-2">
-                      Parah {parah.number}: {parah.englishName}
+                    <h2 className="text-3xl md:text-4xl font-bold mb-2 font-arabic-elegant">
+                      {parah.name}
                     </h2>
-                    <p className="text-blue-100 text-lg font-arabic-elegant mb-2">{parah.name}</p>
+                    <p className="text-blue-100 text-lg mb-2">
+                      Parah {parah.number}: {parah.englishName}
+                    </p>
                     <p className="text-blue-100 text-sm">{parah.description}</p>
                   </div>
                   <div className="text-right">

@@ -24,6 +24,7 @@ export default function SurahPage({ params }: { params: { surahNumber: string } 
   const router = useRouter();
   const [selectedLanguage, setSelectedLanguage] = useState<string>('ur.jalandhry');
   const [surahData, setSurahData] = useState<SurahData | null>(null);
+  const [arabicData, setArabicData] = useState<SurahData | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [versesPerPage] = useState<number>(10);
@@ -123,8 +124,13 @@ export default function SurahPage({ params }: { params: { surahNumber: string } 
     const loadSurahData = async () => {
       setLoading(true);
       try {
-        const data = await getSurahTranslations(surahNumber, selectedLanguage);
-        setSurahData(data);
+        // Load both Arabic and translation data
+        const [arabicResult, translationResult] = await Promise.all([
+          getSurahTranslations(surahNumber, 'quran-uthmani'),
+          getSurahTranslations(surahNumber, selectedLanguage)
+        ]);
+        setArabicData(arabicResult);
+        setSurahData(translationResult);
         
         // Load saved progress after data is loaded
         const savedProgress = loadProgress(surahNumber, selectedLanguage);
@@ -286,25 +292,27 @@ export default function SurahPage({ params }: { params: { surahNumber: string } 
               <div id="verses-container" className="max-h-screen overflow-y-auto">
                 <div className="divide-y divide-gray-100">
                   {currentVerses.map((ayah, index) => (
-                    <div key={ayah.numberInSurah} className="p-8 hover:bg-gray-50 transition-colors duration-200">
-                      <div className="flex items-start gap-6">
+                    <div key={ayah.numberInSurah} className="p-5 md:p-6 lg:p-8 hover:bg-gray-50 transition-colors duration-200">
+                      <div className="flex items-start gap-3 md:gap-4 lg:gap-6">
                         {/* Verse Number */}
-                        <div className="flex-shrink-0 w-14 h-14 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-semibold text-lg">
+                        <div className="flex-shrink-0 w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-semibold text-base md:text-lg lg:text-xl">
                           {ayah.numberInSurah}
                         </div>
                         
                         {/* Content */}
-                        <div className="flex-1 space-y-6">
-                          {/* Arabic Text */}
-                          <div className="text-right">
-                            <p className="arabic-text-large text-gray-900 shadow-sm">
-                              {ayah.text}
-                            </p>
-                          </div>
+                        <div className="flex-1 space-y-4">
+                          {/* Arabic Text - Large Font */}
+                          {arabicData && (
+                            <div className="text-right">
+                              <p className="text-2xl md:text-3xl lg:text-4xl font-arabic-elegant text-gray-900 leading-relaxed">
+                                {arabicData.ayahs.find(a => a.numberInSurah === ayah.numberInSurah)?.text}
+                              </p>
+                            </div>
+                          )}
                           
-                          {/* Translation */}
+                          {/* Translation - Smaller Font */}
                           <div className="text-left">
-                            <p className="text-xl text-gray-700 leading-relaxed">
+                            <p className="text-lg md:text-xl lg:text-2xl text-gray-700 leading-relaxed">
                               {ayah.text}
                             </p>
                           </div>
