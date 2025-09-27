@@ -19,6 +19,15 @@ export const metadata: Metadata = {
   keywords: ["quran", "holy quran", "quran online", "arabic", "urdu", "english", "islam", "muslim", "recitation"],
   authors: [{ name: "Holy Quran App" }],
   viewport: "width=device-width, initial-scale=1",
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "32x32", type: "image/x-icon" }
+    ],
+    apple: [
+      { url: "/favicon.svg", type: "image/svg+xml" }
+    ]
+  }
 };
 
 export default function RootLayout({
