@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-// TypeScript interfaces
 interface Ayah {
   numberInSurah: number;
   text: string;
@@ -36,7 +35,6 @@ export default function SurahPage({ params }: { params: { surahNumber: string } 
     { value: 'en.asad', label: 'English' },
   ];
 
-  // API سے ایک مخصوص سورت کا ترجمہ حاصل کرنے کے لیے ایک فنکشن
   const getSurahTranslations = async (surahNumber: string, language: string): Promise<SurahData> => {
     const res = await fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}/${language}`);
     const data = await res.json();
@@ -45,7 +43,7 @@ export default function SurahPage({ params }: { params: { surahNumber: string } 
 
   const handleLanguageChange = async (language: string) => {
     setSelectedLanguage(language);
-    setCurrentPage(1); // Reset to first page when language changes
+    setCurrentPage(1);
     setLoading(true);
     try {
       const data = await getSurahTranslations(surahNumber, language);
@@ -57,7 +55,6 @@ export default function SurahPage({ params }: { params: { surahNumber: string } 
     }
   };
 
-  // Pagination logic
   const totalPages = surahData ? Math.ceil(surahData.ayahs.length / versesPerPage) : 0;
   const startIndex = (currentPage - 1) * versesPerPage;
   const endIndex = startIndex + versesPerPage;
@@ -65,16 +62,13 @@ export default function SurahPage({ params }: { params: { surahNumber: string } 
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    // Save progress
     saveProgress(surahNumber, page, selectedLanguage);
-    // Scroll to top of verses container
     const versesContainer = document.getElementById('verses-container');
     if (versesContainer) {
       versesContainer.scrollTop = 0;
     }
   };
 
-  // Progress tracking functions
   const saveProgress = (surahNum: string, page: number, language: string) => {
     const progressKey = `quran_progress_${surahNum}_${language}`;
     const progressData = {
@@ -119,12 +113,10 @@ export default function SurahPage({ params }: { params: { surahNumber: string } 
     return 0;
   };
 
-  // Component mount پر سورت کا ڈیٹا لوڈ کریں
   useEffect(() => {
     const loadSurahData = async () => {
       setLoading(true);
       try {
-        // Load both Arabic and translation data
         const [arabicResult, translationResult] = await Promise.all([
           getSurahTranslations(surahNumber, 'quran-uthmani'),
           getSurahTranslations(surahNumber, selectedLanguage)
@@ -132,7 +124,6 @@ export default function SurahPage({ params }: { params: { surahNumber: string } 
         setArabicData(arabicResult);
         setSurahData(translationResult);
         
-        // Load saved progress after data is loaded
         const savedProgress = loadProgress(surahNumber, selectedLanguage);
         if (savedProgress) {
           console.log('Resumed from page:', savedProgress.currentPage);
@@ -348,7 +339,6 @@ export default function SurahPage({ params }: { params: { surahNumber: string } 
                   {/* Page Numbers - Responsive */}
                   <div className="flex items-center gap-1 flex-wrap justify-center max-w-full">
                     {totalPages <= 10 ? (
-                      // Show all pages if 10 or fewer
                       Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                         <button
                           key={page}
@@ -363,7 +353,6 @@ export default function SurahPage({ params }: { params: { surahNumber: string } 
                         </button>
                       ))
                     ) : (
-                      // Show smart pagination for more than 10 pages
                       <>
                         {/* First page */}
                         <button

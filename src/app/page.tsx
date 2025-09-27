@@ -7,7 +7,6 @@ import { PARAH_DATA, getSurahsInParah } from '@/constants/parah';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 
-// TypeScript interfaces for API response
 interface Surah {
   number: number;
   name: string;
@@ -25,7 +24,6 @@ interface ApiResponse {
   };
 }
 
-// Al Quran Cloud API سے تمام سورتوں کی فہرست حاصل کرنے کے لیے ایک فنکشن
 async function getSurahList(): Promise<Surah[]> {
   const res = await fetch('https://api.alquran.cloud/v1/meta');
   const data: ApiResponse = await res.json();
@@ -69,14 +67,12 @@ export default function HomePage() {
     return 0;
   };
 
-  // Get Parah for a specific Surah
   const getParahForSurah = (surahNumber: number) => {
     return PARAH_DATA.find(parah => 
       surahNumber >= parah.startSurah && surahNumber <= parah.endSurah
     );
   };
 
-  // Group Surahs by Parah
   const groupSurahsByParah = () => {
     const grouped: {[key: number]: {parah: any, surahs: Surah[]}} = {};
     
